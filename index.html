@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>tradelog</title>
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+  <div id="sb">
+  <h2>📈 TradeLog</h2>
+  <div class="ni on" onclick="go('dash',this)"><span>🏠</span><span class="nl">Dashboard</span></div>
+  <div class="ni" onclick="go('ck',this)"><span>✅</span><span class="nl">Checklist</span></div>
+  <div class="ni" onclick="go('tr',this)"><span>➕</span><span class="nl">Novo Trade</span></div>
+  <div class="ni" onclick="go('hi',this)"><span>📋</span><span class="nl">Histórico</span></div>
+  <div class="ni" onclick="go('ev',this)"><span>📊</span><span class="nl">Evolução</span></div>
+  <div class="ni" onclick="go('nv',this)"><span>🎯</span><span class="nl">Próx. Nível</span></div>
+  <div class="ni" onclick="go('pl',this)"><span>📄</span><span class="nl">Meu Plano</span></div>
+</div>
+
+<div id="main">
+
+<div id="pg-dash" class="pg on">
+  <h1>Dashboard</h1>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+    <select id="dff" onchange="rDash()" style="background:var(--s);border:1px solid var(--b);border-radius:7px;color:var(--t);padding:7px 10px;font-size:12px;outline:none">
+      <option value="week">Esta Semana</option>
+      <option value="month" selected>Este Mês</option>
+      <option value="all">Tudo</option>
+    </select>
+  </div>
+  <div class="cards" id="dc"></div>
+  <div class="g2">
+    <div class="box"><h3>Resultado Acumulado R$</h3><div class="cw"><canvas id="cP"></canvas></div></div>
+    <div class="box"><h3>Aderência ao Plano %</h3><div class="cw"><canvas id="cA"></canvas></div></div>
+  </div>
+  <div class="g2">
+    <div class="box"><h3>Por Semana</h3><div class="cw"><canvas id="cW"></canvas></div></div>
+    <div class="box"><h3>Win Rate</h3><div class="cw"><canvas id="cR"></canvas></div></div>
+  </div>
+  <div class="box"><h3>Últimos Trades</h3>
+    <div style="overflow-x:auto">
+      <table><thead><tr><th>Data</th><th>Conta</th><th>Dir</th><th>Setup</th><th>Res</th><th>R$</th><th>RR</th><th>Plano%</th><th>Emo</th><th></th></tr></thead>
+      <tbody id="dtb"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<div id="pg-ck" class="pg">
+  <h1>Checklist Pré-Operacional</h1>
+  <div class="pr"><h4>📌 Lembrete do Plano</h4>
+    <div class="prg">
+      <div class="pri"><span>Janela</span><strong>9h20–11h40</strong></div>
+      <div class="pri"><span>Risco/trade própria</span><strong>R$ 30,00</strong></div>
+      <div class="pri"><span>Loss diário própria</span><strong>R$ 60,00</strong></div>
+      <div class="pri"><span>Máx trades própria</span><strong>2</strong></div>
+      <div class="pri"><span>Risco/trade mesa</span><strong>R$ 60,00</strong></div>
+      <div class="pri"><span>Loss diário mesa</span><strong>R$ 150,00</strong></div>
+      <div class="pri"><span>Máx trades mesa</span><strong>3</strong></div>
+      <div class="pri"><span>Meta própria/dia</span><strong>R$ 150,00</strong></div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="sec">📅 Data</div>
+    <div style="max-width:200px"><div class="fld"><label>Data do Pregão</label><input type="date" id="ckd"/></div></div>
+  </div>
+  <div class="box">
+    <div class="sec">🧘 Rituais</div>
+    <div class="cg">
+      <label class="ci" id="lck1"><input type="checkbox" id="ck1" onchange="tc('lck1','ck1')"/> 🧘 Meditação prévia realizada</label>
+      <label class="ci" id="lck2"><input type="checkbox" id="ck2" onchange="tc('lck2','ck2')"/> 🌍 Análise macro (USD, Gold, Juros, Bolsas, Petróleo, Minério)</label>
+      <label class="ci" id="lck3"><input type="checkbox" id="ck3" onchange="tc('lck3','ck3')"/> 📊 Análise top-down WIN (D→M15)</label>
+      <label class="ci" id="lck4"><input type="checkbox" id="ck4" onchange="tc('lck4','ck4')"/> 📄 Reli meu plano de trade</label>
+    </div>
+  </div>
+  <div class="box">
+    <div class="sec">😴 Sono</div>
+    <div class="frm c3">
+      <div class="fld"><label>Horas dormidas</label><input type="number" id="cksh" min="0" max="24" step="0.5" placeholder="ex: 7.5"/></div>
+      <div class="fld" style="grid-column:span 2">
+        <label>Qualidade — <span id="sqv">5</span>/10</label>
+        <input type="range" min="1" max="10" value="5" id="cksq" oninput="document.getElementById('sqv').textContent=this.value"/>
+        <div class="sl"><span>Péssima</span><span>Excelente</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="sec">🎭 Emocional</div>
+    <div class="fld" style="margin-bottom:14px"><label>Humor do dia</label>
+      <div class="er" id="humor-row">
+        <button type="button" class="eb" data-v="😄" onclick="se('humor',this)">😄</button>
+        <button type="button" class="eb" data-v="🙂" onclick="se('humor',this)">🙂</button>
+        <button type="button" class="eb" data-v="😐" onclick="se('humor',this)">😐</button>
+        <button type="button" class="eb" data-v="😔" onclick="se('humor',this)">😔</button>
+        <button type="button" class="eb" data-v="😟" onclick="se('humor',this)">😟</button>
+        <button type="button" class="eb" data-v="😤" onclick="se('humor',this)">😤</button>
+        <button type="button" class="eb" data-v="😰" onclick="se('humor',this)">😰</button>
+      </div>
+    </div>
+    <div class="fld" style="margin-bottom:14px">
+      <label>Ansiedade — <span id="anv">3</span>/10</label>
+      <input type="range" min="1" max="10" value="3" id="ckan" oninput="document.getElementById('anv').textContent=this.value"/>
+      <div class="sl"><span>Calmo</span><span>Ansioso</span></div>
+    </div>
+    <div class="fld" style="margin-bottom:14px">
+      <label>Foco — <span id="fov">7</span>/10</label>
+      <input type="range" min="1" max="10" value="7" id="ckfo" oninput="document.getElementById('fov').textContent=this.value"/>
+      <div class="sl"><span>Disperso</span><span>Focado</span></div>
+    </div>
+    <div class="fld"><label>Observações</label><textarea id="ckob" placeholder="Como você está hoje?"></textarea></div>
+  </div>
+  <div class="box">
+    <div class="sec">🌍 Análise Macro</div>
+    <div class="frm">
+      <div class="fld"><label>USD</label><select id="ckusd"><option value="">--</option><option>Alta</option><option>Baixa</option><option>Lateral</option></select></div>
+      <div class="fld"><label>Gold</label><select id="ckgld"><option value="">--</option><option>Alta</option><option>Baixa</option><option>Lateral</option></select></div>
+      <div class="fld"><label>Juros EUA</label><select id="ckjur"><option value="">--</option><option>Subindo</option><option>Caindo</option><option>Estável</option></select></div>
+      <div class="fld"><label>Petróleo</label><select id="ckpet"><option value="">--</option><option>Alta</option><option>Baixa</option><option>Lateral</option></select></div>
+      <div class="fld"><label>Viés WIN</label><select id="ckvie"><option value="">--</option><option>Comprado</option><option>Vendido</option><option>Neutro</option></select></div>
+      <div class="fld"><label>Convicção — <span id="cnv">5</span>/10</label>
+        <input type="range" min="1" max="10" value="5" id="ckcnv" oninput="document.getElementById('cnv').textContent=this.value"/>
+      </div>
+    </div>
+    <div class="fld" style="margin-top:12px"><label>Notas macro</label><textarea id="ckmo" placeholder="POIs, liquidez, contexto..."></textarea></div>
+  </div>
+  <div class="br">
+    <button class="btn bp" onclick="saveCk()">💾 Salvar Checklist</button>
+    <button class="btn bx" onclick="loadCkToday()">🔄 Carregar Hoje</button>
+  </div>
+</div>
+
+<div id="pg-tr" class="pg">
+  <h1>Registrar Trade</h1>
+  <div class="box">
+    <div class="sec">📊 Dados da Operação</div>
+    <div class="frm c3">
+      <div class="fld"><label>Data</label><input type="date" id="trd"/></div>
+      <div class="fld"><label>Conta</label><select id="trc"><option value="propria">Própria</option><option value="mesa">Mesa Proprietária</option></select></div>
+      <div class="fld"><label>Nº da Op.</label><select id="trn"><option value="1">1ª operação</option><option value="2">2ª operação</option><option value="3">3ª operação</option></select></div>
+      <div class="fld"><label>Direção</label><select id="trdi"><option value="compra">Compra (Long)</option><option value="venda">Venda (Short)</option></select></div>
+      <div class="fld"><label>Resultado</label><select id="trre"><option value="gain">Gain ✅</option><option value="loss">Loss ❌</option><option value="zero">Breakeven ⚖️</option></select></div>
+      <div class="fld"><label>Valor R$ (negativo = loss)</label><input type="number" id="trva" placeholder="ex: 90 ou -30" step="0.01"/></div>
+      <div class="fld"><label>Relação RR</label><input type="number" id="trrr" placeholder="ex: 3" step="0.1"/></div>
+      <div class="fld"><label>Timeframe</label><select id="trtf"><option>M15</option><option>H1</option><option>H2</option><option>H4</option></select></div>
+      <div class="fld"><label>Setup</label><select id="trse"><option value="FVG">FVG com engolfo</option><option value="OB">Order Block</option><option value="CISD">CISD</option><option value="iFVG">iFVG</option><option value="VWAP">VWAP + Gatilho</option><option value="Outro">Outro</option></select></div>
+    </div>
+  </div>
+  <div class="box">
+    <div class="sec">✅ Aderência ao Plano</div>
+    <div class="cg">
+      <label class="ci" id="la1"><input type="checkbox" id="a1" onchange="tc('la1','a1')"/> Operei a favor da estrutura macro</label>
+      <label class="ci" id="la2"><input type="checkbox" id="a2" onchange="tc('la2','a2')"/> Entrei em POI válido (OB/FVG/CISD/iFVG)</label>
+      <label class="ci" id="la3"><input type="checkbox" id="a3" onchange="tc('la3','a3')"/> Respeitei o stop — sem mover, sem ampliar</label>
+      <label class="ci" id="la4"><input type="checkbox" id="a4" onchange="tc('la4','a4')"/> Fui ao alvo sem sair antes por ansiedade</label>
+      <label class="ci" id="la5"><input type="checkbox" id="a5" onchange="tc('la5','a5')"/> Executei parcial/trailing stop corretamente</label>
+      <label class="ci" id="la6"><input type="checkbox" id="a6" onchange="tc('la6','a6')"/> Respeitei o risco máximo por operação</label>
+    </div>
+  </div>
+  <div class="box">
+    <div class="sec">🧠 Psicologia</div>
+    <div class="frm">
+      <div class="fld"><label>Emoção durante o trade</label>
+        <div class="er" id="temo-row">
+          <button type="button" class="eb" data-v="😄" onclick="se('temo',this)">😄</button>
+          <button type="button" class="eb" data-v="😌" onclick="se('temo',this)">😌</button>
+          <button type="button" class="eb" data-v="😐" onclick="se('temo',this)">😐</button>
+          <button type="button" class="eb" data-v="😰" onclick="se('temo',this)">😰</button>
+          <button type="button" class="eb" data-v="😤" onclick="se('temo',this)">😤</button>
+          <button type="button" class="eb" data-v="🤯" onclick="se('temo',this)">🤯</button>
+        </div>
+      </div>
+      <div class="fld"><label>FOMO / Revenge / Overtrading?</label>
+        <select id="trfm"><option value="nao">Não</option><option value="fomo">FOMO</option><option value="revenge">Revenge Trade</option><option value="over">Overtrading</option></select>
+      </div>
+    </div>
+    <div class="fld" style="margin-top:12px"><label>Descrição da operação</label><textarea id="trds" placeholder="O que aconteceu..."></textarea></div>
+    <div class="fld" style="margin-top:10px"><label>Aprendizado</label><textarea id="trap" placeholder="O que faria diferente?"></textarea></div>
+  </div>
+  <div class="box">
+    <div class="sec">📸 Prints do Gráfico</div>
+    <div class="ua" onclick="document.getElementById('trfi').click()">
+      <input type="file" id="trfi" multiple accept="image/*" onchange="prevImg(this)"/>
+      <div>📷 Clique para adicionar prints do gráfico</div>
+    </div>
+    <div class="thr" id="tprev"></div>
+  </div>
+  <div class="br">
+    <button class="btn bp" onclick="saveTr()">💾 Salvar Trade</button>
+    <button class="btn bx" onclick="clrTr()">🗑️ Limpar</button>
+  </div>
+</div>
+
+<div id="pg-hi" class="pg">
+  <h1>Histórico</h1>
+  <div class="fb">
+    <select id="hfp" onchange="rHist()"><option value="all">Todos períodos</option><option value="week">Esta semana</option><option value="month">Este mês</option><option value="last20">Últimos 20 pregões</option></select>
+    <select id="hfc" onchange="rHist()"><option value="all">Todas contas</option><option value="propria">Própria</option><option value="mesa">Mesa</option></select>
+    <select id="hfr" onchange="rHist()"><option value="all">Todos</option><option value="gain">Gains</option><option value="loss">Losses</option><option value="zero">Breakeven</option></select>
+    <input type="date" id="hfde" onchange="rHist()"/>
+    <input type="date" id="hfat" onchange="rHist()"/>
+    <button class="btn bx" style="padding:6px 10px;font-size:11px" onclick="clrHF()">Limpar filtros</button>
+  </div>
+  <div class="box" style="overflow-x:auto">
+    <table><thead><tr><th>Data</th><th>Conta</th><th>Dir</th><th>Setup</th><th>Res</th><th>R$</th><th>RR</th><th>Plano%</th><th>Emo</th><th>Ações</th></tr></thead>
+    <tbody id="htb"></tbody></table>
+  </div>
+</div>
+
+<div id="pg-ev" class="pg">
+  <h1>Evolução</h1>
+  <div class="box"><h3>Resultado Mensal R$</h3><div class="cw" style="height:230px"><canvas id="cMen"></canvas></div></div>
+  <div class="g2">
+    <div class="box"><h3>Aderência Gains %</h3><div class="cw"><canvas id="cAG"></canvas></div></div>
+    <div class="box"><h3>Aderência Losses %</h3><div class="cw"><canvas id="cAL"></canvas></div></div>
+  </div>
+  <div class="box"><h3>Resumo por Mês</h3>
+    <div style="overflow-x:auto">
+      <table><thead><tr><th>Mês</th><th>Trades</th><th>Gains</th><th>Losses</th><th>Win%</th><th>R$</th><th>Adh.Gains</th><th>Adh.Losses</th></tr></thead>
+      <tbody id="etb"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<div id="pg-nv" class="pg">
+  <h1>Próximo Nível</h1>
+  <div class="cards" id="nvc"></div>
+  <div class="hl"><h4>🎯 Critérios — Últimos 20 Pregões</h4><div class="lc" id="nvcr"></div></div>
+  <div class="box"><h3>Escada de Níveis — Conta Própria</h3><div id="esc"></div></div>
+  <div class="box"><h3>Últimos 20 Pregões</h3>
+    <div style="overflow-x:auto">
+      <table><thead><tr><th>Data</th><th>Trades</th><th>R$</th><th>Aderência</th><th>Overtrading</th><th>Loss>30%</th><th>Status</th></tr></thead>
+      <tbody id="nvtb"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<div id="pg-pl" class="pg">
+  <h1>Meu Plano de Trade</h1>
+  <div class="box"><div style="max-width:700px;line-height:1.9;font-size:13px">
+    <h2 style="color:var(--a);margin-bottom:6px;font-size:18px">Plano de Trade — WIN</h2>
+    <p style="color:var(--t2);margin-bottom:20px;font-size:12px">SMC · v1.0</p>
+    <div class="sec">1. Mercado Ativo</div><p>WIN — Futuro de Índice Bovespa.</p>
+    <div class="dv"></div>
+    <div class="sec">2. Metodologia D→H4→H2→H1→M15</div>
+    <p><b>Modelo A:</b> POI→reação→FVG→entrada→stop abaixo/acima.<br><br>
+    <b>Modelo B:</b> POI→reação→VWAP→gatilho+volume→stop abaixo/acima.</p>
+    <div class="dv"></div>
+    <div class="sec">3–9. Regras Operacionais</div>
+    <p>📌 Própria: 1ct · R$30/trade · R$60 loss/dia · 2 trades · meta R$150<br>
+    📌 Mesa: 2ct · R$60/trade · R$150 loss/dia · 3 trades · meta R$300<br>
+    📌 Alvo mín. 3x1 · Breakeven no 2x1 · Trailing ao máximo<br>
+    📌 Janela 9h20–11h40 · Loss bateu → plataforma fecha</p>
+    <div class="dv"></div>
+    <div class="sec">11. Próximo Nível</div>
+    <p>+R$1.000 acumulados = +1 contrato: R$3k→2ct · R$4k→3ct · R$5k→4ct</p>
+    <div class="dv"></div>
+    <div class="sec">12. Critérios (últimos 20 pregões)</div>
+    <p>✅ 75% gains no plano · ✅ 90% stops respeitados · ✅ 0 overtrading · ✅ 0 loss>30%</p>
+    <div class="dv"></div>
+    <div class="sec">Regras Adicionais</div>
+    <p><b>2 stops seguidos</b> = dia encerrado. Exceção: 1stop+1gain = +1 trade.<br>
+    <b>Checklist pré-operacional</b> obrigatório todos os dias.</p>
+  </div></div>
+</div>
+
+</div>
+
+<div class="ov" id="modal" onclick="if(event.target===this)clModal()">
+  <div class="md">
+    <div class="mh"><h3 id="mtit">Detalhe do Trade</h3><button class="mc" onclick="clModal()">✕</button></div>
+    <div id="mbod"></div>
+  </div>
+</div>
+<div class="toast" id="toast"><span id="tic">✅</span><span id="tms">OK</span></div>
+    <script src='https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js'></script><script  src="./script.js"></script>
+
+  </body>
+  
+</html>
